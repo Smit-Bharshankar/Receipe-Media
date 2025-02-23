@@ -18,9 +18,9 @@ app.use(express.static("public")); // for storing assests in public
 app.use(cookieParser()); // for reading and writing cookies in user's browser
 
 // Routes
-// import userRouter from "./routes/user.routes.js";
+import userRouter from "./routes/user.routes.js";
 
 // Routes Declaration
-// app.use("/api/v1/users", userRouter); // http://localhost:3000/api/v1/users
+app.use("/api/v1/users", userRouter); // http://localhost:4000/api/v1/users
 
 export { app };
