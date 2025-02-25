@@ -4,20 +4,25 @@ import axios from "axios";
 const BACKEND_URI = import.meta.env.VITE_BACKEND_URI || "http://localhost:5000/api/v1"; // Fallback URL
 
 // Fetch Recipes
-export const fetchRecipes = createAsyncThunk("recipes/fetch", async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get(`${BACKEND_URI}/recipe/getall-Recipe`, {
-      withCredentials: true,
-    });
-    if (data) console.log("Fetched Recipes", data.data.recipes);
-    return data.data.recipes;
-  } catch (error) {
-    return rejectWithValue({
-      message: "Error while fetching Recipes",
-      details: error.response?.data || "No details available",
-    });
+export const fetchRecipes = createAsyncThunk(
+  "recipes/fetch",
+  async ({ query = "", category = "" } = {}, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${BACKEND_URI}/recipe/getall-Recipe`, {
+        params: { query, category },
+        withCredentials: true,
+      });
+
+      if (data) console.log("Fetched Recipes", data.data.recipes);
+      return data.data.recipes;
+    } catch (error) {
+      return rejectWithValue({
+        message: "Error while fetching Recipes",
+        details: error.response?.data || "No details available",
+      });
+    }
   }
-});
+);
 
 // Add Recipe
 export const addRecipe = createAsyncThunk("recipes/add", async (recipe, { rejectWithValue }) => {

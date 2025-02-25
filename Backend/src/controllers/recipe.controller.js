@@ -74,7 +74,7 @@ const createRecipe = asyncHandler(async (req, res) => {
   }
 });
 
-// const getAllRecipe = asyncHandler(async (req, res) => {
+//1 const getAllRecipe = asyncHandler(async (req, res) => {
 //   const {
 //     page = 1,
 //     limit = 12,
@@ -96,10 +96,12 @@ const createRecipe = asyncHandler(async (req, res) => {
 //             },
 //           }
 //         : null,
-//       userId ? { $match: { userId: new mongoose.Types.ObjectId(userId) } } : null, // Ensure userId filtering
+//       userId && mongoose.isValidObjectId(userId)
+//         ? { $match: { userId: new mongoose.Types.ObjectId(userId) } }
+//         : null,
 //       {
 //         $lookup: {
-//           from: "User",
+//           from: "users",
 //           localField: "userId",
 //           foreignField: "_id",
 //           as: "createdBy",
@@ -119,6 +121,7 @@ const createRecipe = asyncHandler(async (req, res) => {
 //           ingredients: 1,
 //           steps: 1,
 //           category: 1,
+//           createdAt: 1,
 //           createdBy: {
 //             username: 1,
 //             avatar: 1,
@@ -231,20 +234,148 @@ const createRecipe = asyncHandler(async (req, res) => {
 //   }
 // });
 
-const getAllRecipe = asyncHandler(async (req, res) => {
-  const recipes = await Recipe.find().sort({ createdAt: -1 });
+// const getAllRecipe = asyncHandler(async (req, res) => {
+//   const recipes = await Recipe.find().sort({ createdAt: -1 });
 
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      {
-        recipes,
-        totalRecipes: recipes.length,
-      },
-      "Recipes fetched successfully"
-    )
-  );
+//   return res.status(200).json(
+//     new ApiResponse(
+//       200,
+//       {
+//         recipes,
+//         totalRecipes: recipes.length,
+//       },
+//       "Recipes fetched successfully"
+//     )
+//   );
+// });
+
+const getAllRecipe = asyncHandler(async (req, res) => {
+  try {
+    const {
+      search,
+      category,
+      page = 1,
+      limit = 12,
+      sortBy = "createdAt",
+      sortType = "desc",
+    } = req.query;
+    const query = {};
+
+    // If search query exists, filter by title or description (case-insensitive)
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // If category filter exists, add it to query
+    if (category) {
+      query.category = category;
+    }
+
+    // Pagination
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Fetch recipes with pagination and sorting
+    const recipes = await Recipe.find(query)
+      .sort({ [sortBy]: sortType === "asc" ? 1 : -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    // Count total matching documents
+    const totalRecipes = await Recipe.countDocuments(query);
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          recipes,
+          totalRecipes,
+          pagelimit: Number(limit),
+        },
+        "Recipes fetched successfully"
+      )
+    );
+  } catch (error) {
+    throw new ApiError(400, "There's some problem while getting recipes");
+  }
 });
+
+// GPT version
+// const getAllRecipe = asyncHandler(async (req, res) => {
+//   const {
+//     page = 1,
+//     limit = 12,
+//     query = "",
+//     sortBy = "createdAt",
+//     sortType = "desc",
+//     userId,
+//   } = req.query;
+
+//   const matchStage = {};
+
+//   if (query.trim() !== "") {
+//     matchStage.$or = [
+//       { title: { $regex: query, $options: "i" } },
+//       { description: { $regex: query, $options: "i" } },
+//     ];
+//   }
+
+//   if (userId && mongoose.isValidObjectId(userId)) {
+//     matchStage.userId = new mongoose.Types.ObjectId(userId);
+//   }
+
+//   const recipes = await Recipe.aggregate(
+//     [
+//       Object.keys(matchStage).length ? { $match: matchStage } : null,
+//       {
+//         $lookup: {
+//           from: "users", // Ensure correct collection name
+//           localField: "userId",
+//           foreignField: "_id",
+//           as: "createdBy",
+//         },
+//       },
+//       { $unwind: { path: "$createdBy", preserveNullAndEmptyArrays: true } },
+//       {
+//         $project: {
+//           image: 1,
+//           title: 1,
+//           description: 1,
+//           ingredients: 1,
+//           steps: 1,
+//           category: 1,
+//           createdAt: 1,
+//           createdBy: { username: 1, avatar: 1 },
+//         },
+//       },
+//       {
+//         $facet: {
+//           metadata: [{ $count: "total" }],
+//           data: [
+//             { $sort: { [sortBy]: sortType === "asc" ? 1 : -1 } },
+//             { $skip: (page - 1) * limit },
+//             { $limit: parseInt(limit) },
+//           ],
+//         },
+//       },
+//     ].filter(Boolean)
+//   ); // Removes null stages
+
+//   const metadata = recipes[0]?.metadata[0] || { total: 0 };
+//   const RecipeData = recipes[0]?.data || [];
+
+//   return res
+//     .status(200)
+//     .json(
+//       new ApiResponse(
+//         200,
+//         { recipes: RecipeData, totalRecipes: metadata.total, pagelimit: limit },
+//         "Recipes fetched successfully"
+//       )
+//     );
+// });
 
 const getRecipeById = asyncHandler(async (req, res) => {
   const { recipeId } = req.params;

@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import RecipeForm from "./Pages/RecipeForm";
+import Navbar from "./Components/Navbar";
 
 const App = () => {
   return (
@@ -28,6 +29,8 @@ const App = () => {
           fontFamily: "sans-serif",
         }}
       />
+      {/* Navbar */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
