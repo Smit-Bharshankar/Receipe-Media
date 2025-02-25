@@ -16,10 +16,7 @@ const genAccessAndRefreshTokens = async (userId) => {
 
     return { accesstoken, refreshtoken };
   } catch (error) {
-    throw new ApiError(
-      500,
-      "Something went wrong while generating Refresh and Access Tokens"
-    );
+    throw new ApiError(500, "Something went wrong while generating Refresh and Access Tokens");
   }
 };
 
@@ -40,10 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   if (username.length < 3 || username.length > 15) {
-    throw new ApiError(
-      400,
-      "Username must be between 3 and 15 characters long"
-    );
+    throw new ApiError(400, "Username must be between 3 and 15 characters long");
   }
 
   const existingUser = await User.findOne({
@@ -56,11 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   let avatarLocalPath;
   let avatar;
-  if (
-    req.files &&
-    Array.isArray(req.files.avatar) &&
-    req.files.avatar.length > 0
-  ) {
+  if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
     avatarLocalPath = req.files.avatar[0].path;
   }
 
@@ -75,20 +65,16 @@ const registerUser = asyncHandler(async (req, res) => {
     username,
     email,
     password,
-    avatar: avatar?.url || null,
+    avatar: avatar?.url,
   });
 
-  const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
+  const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
   if (!createdUser) {
     throw new ApiError(500, "Failed to create user");
   }
 
-  return res
-    .status(201)
-    .json(new ApiResponse(201, createdUser, "User created successfully"));
+  return res.status(201).json(new ApiResponse(201, createdUser, "User created successfully"));
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -110,9 +96,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid User Credentials");
   }
 
-  const { accesstoken, refreshtoken } = await genAccessAndRefreshTokens(
-    user._id
-  );
+  const { accesstoken, refreshtoken } = await genAccessAndRefreshTokens(user._id);
 
   user.refreshToken = refreshtoken;
 

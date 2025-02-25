@@ -5,10 +5,19 @@ import cors from "cors";
 const app = express();
 
 // app.use is used for middleware or configuration
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
-    credentials: true,
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        // !origin allows requests from non-browser clients (like Postman)
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // Allow cookies to be sent/received
   })
 );
 
@@ -19,8 +28,10 @@ app.use(cookieParser()); // for reading and writing cookies in user's browser
 
 // Routes
 import userRouter from "./routes/user.routes.js";
+import recipeRouter from "./routes/recipe.routes.js";
 
 // Routes Declaration
 app.use("/api/v1/users", userRouter); // http://localhost:4000/api/v1/users
+app.use("/api/v1/recipe", recipeRouter); // http://localhost:4000/api/v1/recipe
 
 export { app };
