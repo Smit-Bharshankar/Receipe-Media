@@ -12,7 +12,10 @@ export const registerUser = createAsyncThunk(
       });
       return data;
     } catch (error) {
-      return rejectWithValue(error.response.data); // Return error message
+      return rejectWithValue({
+        message: "Error while register user",
+        details: error.response?.data || "No details available",
+      }); // Return error message
     }
   }
 );
@@ -22,8 +25,7 @@ export const loginUser = createAsyncThunk("auth/login", async (userData, { rejec
     const { data } = await axios.post(`${BACKEND_URI}/users/login`, userData, {
       withCredentials: true,
     });
-    localStorage.setItem("token", data.token); // Persist token
-    if (data) console.log(data);
+    if (data) console.log("AuthSlice::loginUser :", data);
     return data;
   } catch (error) {
     return rejectWithValue({
@@ -33,14 +35,37 @@ export const loginUser = createAsyncThunk("auth/login", async (userData, { rejec
   }
 });
 
-export const logoutUser = createAsyncThunk("auth/logout", async () => {
-  await axios.post(`${BACKEND_URI}/users/logout`, {}, { withCredentials: true });
-  localStorage.removeItem("token"); // Clear token
+export const logoutUser = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${BACKEND_URI}/users/logout`, {}, { withCredentials: true });
+
+    console.log("✅ Log from logoutUser in authSlice:", response.data);
+
+    return response.data.success; // Ensure correct response
+  } catch (error) {
+    console.error("❌ Error during logout:", error.response?.data || error.message);
+    return rejectWithValue({
+      message: "Error while logging-out user",
+      details: error.response?.data || "No details available",
+    });
+  }
+});
+
+export const getUser = createAsyncThunk("auth/getUser", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`${BACKEND_URI}/users/getUser`, { withCredentials: true });
+    return response.data; // Ensure this matches API response structure
+  } catch (error) {
+    console.log(error);
+    return rejectWithValue({
+      message: "Error while fetching user in getUser authSlice",
+      details: error.response?.data || "No details availiable",
+    });
+  }
 });
 
 const initialState = {
   user: null,
-  token: localStorage.getItem("token") || null,
   loading: false,
   error: null,
 };
@@ -51,12 +76,11 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
-      state.token = null;
-      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
     builder
+      // Reigster User
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -71,6 +95,7 @@ const authSlice = createSlice({
         state.error = payload?.message || "Registration failed";
       })
 
+      // Login User
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -85,9 +110,24 @@ const authSlice = createSlice({
         state.error = payload?.message || "Login failed";
       })
 
+      // Logout User
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
+      })
+
+      // Get User
+      .addCase(getUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUser.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.user = payload.data; // Ensure correct structure
+      })
+      .addCase(getUser.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.message;
       });
   },
 });

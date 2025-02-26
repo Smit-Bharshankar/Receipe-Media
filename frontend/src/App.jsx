@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Home from "./Pages/Home";
+import DisplayRecipes from "./Pages/DisplayRecipes";
 import Login from "./Pages/Login";
 import RecipeForm from "./Pages/RecipeForm";
 import Navbar from "./Components/Navbar";
+import ProfilePage from "./Pages/ProfilePage";
+import UpdateProfile from "./Pages/UpdateProfile";
+import MyRecipes from "./Pages/MyRecipes";
+import LikedRecipes from "./Pages/LikedRecipes";
+import SavedRecipes from "./Pages/SavedRecipes";
+import ChangePassword from "./Pages/ChangePassword";
+import MoreOptions from "./Pages/MoreOptions";
+
+import ProtectedRoute from "./Components/ProtectedRoute";
+import { getUser } from "./Store/Slices/authSlice";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(getUser()); // Fetch user details if not already in Redux
+    }
+  }, [dispatch, user]);
   return (
     <Router>
       <ToastContainer
@@ -31,10 +50,26 @@ const App = () => {
       />
       {/* Navbar */}
       <Navbar />
+
       <Routes>
+        {/* Public Route  */}
         <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/addRecipe" element={<RecipeForm />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Private Route */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/display-recipes" element={<DisplayRecipes />} />
+          <Route path="/add-Recipe" element={<RecipeForm />} />
+
+          {/* Profile Routes */}
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/my-recipes" element={<MyRecipes />} />
+          <Route path="/liked-recipes" element={<LikedRecipes />} />
+          <Route path="/saved-recipes" element={<SavedRecipes />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/update-profile" element={<UpdateProfile />} />
+          <Route path="/more-options" element={<MoreOptions />} />
+        </Route>
       </Routes>
     </Router>
   );

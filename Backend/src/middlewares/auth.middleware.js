@@ -27,7 +27,7 @@ const verifyJwt = asyncHandler(async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       throw new ApiError(401, "Access Token Expired");
     }
-    throw new ApiError(402, "Error at backend");
+    throw new ApiError(402, "Error at backend in AuthMiddleware");
   }
 });
 

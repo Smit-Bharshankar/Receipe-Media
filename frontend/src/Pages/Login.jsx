@@ -2,13 +2,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../Store/Slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Login = () => {
   const { register, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
+
   const { loading, error } = useSelector((state) => state.auth);
 
   const onSubmit = async (data) => {
@@ -17,7 +19,8 @@ const Login = () => {
     if (loginUser.fulfilled.match(resultAction)) {
       toast.success("Login successful!");
       reset(); // Clear form on success
-      navigate("/home"); // Redirect to home
+      // navigate("/home"); // Redirect to home
+      navigate(location.state?.from?.pathname || "/display-recipes"); // Redirect to original page or home
     } else {
       toast.error(resultAction.payload?.message || "Login failed. Please try again.");
     }
@@ -37,6 +40,7 @@ const Login = () => {
             {...register("email", { required: true })}
             className="border rounded w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your email"
+            autoComplete="current-email"
           />
         </div>
 
@@ -47,6 +51,7 @@ const Login = () => {
             {...register("password", { required: true })}
             className="border rounded w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password"
+            autoComplete="current-password"
           />
         </div>
 

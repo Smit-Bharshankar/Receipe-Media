@@ -4,36 +4,44 @@ import { NavLink } from "react-router-dom";
 const Navbar = () => {
   return (
     <nav className="bg-blue-600 text-white sticky top-0 shadow-md z-50">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+      <div className="max-w-full mx-auto px-4">
+        <div className="flex w-full justify-between items-center py-4">
           {/* Logo */}
           <h1 className="text-xl font-bold">Recipe App</h1>
 
           {/* Navigation Links */}
-          <div className="space-x-6">
+          <div className=" flex flex-row gap-6  sm:text-base">
             <NavLink
-              to="/home"
+              to="/display-recipes"
               className={({ isActive }) =>
-                `hover:text-gray-200 ${isActive ? "border-b-2 border-white" : ""}`
+                `hover:text-gray-200 ${isActive ? "border-b-2 scale-105 border-white" : ""}`
               }
             >
               Home
             </NavLink>
             <NavLink
-              to="/"
+              to="/login"
               className={({ isActive }) =>
-                `hover:text-gray-200 ${isActive ? "border-b-2 border-white" : ""}`
+                `hover:text-gray-200 ${isActive ? "border-b-2 scale-105 border-white" : ""}`
               }
             >
               Login
             </NavLink>
             <NavLink
-              to="/addRecipe"
+              to="/add-Recipe"
               className={({ isActive }) =>
-                `hover:text-gray-200 ${isActive ? "border-b-2 border-white" : ""}`
+                `hover:text-gray-200 ${isActive ? "border-b-2 scale-105 border-white" : ""}`
               }
             >
               Add Recipe
+            </NavLink>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                `hover:text-gray-200 ${isActive ? "border-b-2 scale-105 border-white" : ""}`
+              }
+            >
+              Profile
             </NavLink>
           </div>
         </div>
