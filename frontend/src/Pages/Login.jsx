@@ -30,7 +30,8 @@ const Login = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {/* {error && <p className="text-red-500">{error}</p>} // shows error on login page
+      without waiting for login first */}
 
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 shadow-lg rounded-lg w-80">
         <div className="mb-4">

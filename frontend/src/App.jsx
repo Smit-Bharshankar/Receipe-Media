@@ -14,6 +14,7 @@ import LikedRecipes from "./Pages/LikedRecipes";
 import SavedRecipes from "./Pages/SavedRecipes";
 import ChangePassword from "./Pages/ChangePassword";
 import MoreOptions from "./Pages/MoreOptions";
+import Home from "./Pages/Home";
 
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { getUser } from "./Store/Slices/authSlice";
@@ -53,7 +54,7 @@ const App = () => {
 
       <Routes>
         {/* Public Route  */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
         {/* Private Route */}
