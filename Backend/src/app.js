@@ -32,8 +32,8 @@ import recipeRouter from "./routes/recipe.routes.js";
 import commentRouter from "./routes/comment.routes.js";
 
 // Routes Declaration
-app.use("/api/v1/users", userRouter); // http://localhost:4000/api/v1/users
-app.use("/api/v1/recipe", recipeRouter); // http://localhost:4000/api/v1/recipe
-app.use("/api/v1/comment", commentRouter); // http://localhost:4000/api/v1/comment
+app.use("/api/v1/users", userRouter); // http://localhost:5000/api/v1/users
+app.use("/api/v1/recipe", recipeRouter); // http://localhost:5000/api/v1/recipe
+app.use("/api/v1/comment", commentRouter); // http://localhost:5000/api/v1/comment
 
 export { app };
