@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div className="font-josefin">
       {/* Hero Section */}
-      <div className="bg-green-700 w-full flex flex-col md:flex-row items-center justify-between px-6 md:px-12 lg:px-20 py-12 font-josefin">
+      <div className="bg-gradient-to-r from-green-600 via-green-700 to-green-600 w-full flex flex-col md:flex-row items-center justify-between px-6 md:px-12 lg:px-20 py-12 font-josefin">
         {/* Left: Text Section */}
         <div className="text-white text-center md:text-left max-w-[90%] md:max-w-[50%]">
           <h1 className="text-3xl md:text-5xl font-bold leading-tight">Cook. Share. Connect.</h1>
@@ -98,6 +98,13 @@ const Home = () => {
 
       {/* Easy and Quick Recipes  */}
       <div className="flex flex-col flex-wrap justify-center gap-6 px-6 py-8">
+        <div
+          className="h-52 rounded-xl flex flex-col items-center justify-center text-white text-4xl font-bold bg-cover bg-center"
+          style={{ backgroundImage: `url(${cook1})` }}
+        >
+          Best Easy and Fast Recipes
+          <span className="font-semibold text-sm">Enjoy our wide variety and do it DIY</span>
+        </div>
         <div className="flex items-center justify-center py-3">
           <span className="text-4xl font-semibold">Fresh From Our Community</span>
         </div>

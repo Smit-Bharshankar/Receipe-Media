@@ -1,23 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { PiCookingPotBold } from "react-icons/pi";
 import { IoLogIn } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
+import { HiMenu, HiX } from "react-icons/hi"; // Hamburger and Close Icons
 
 const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <nav className="bg-green-800 text-white sticky top-0 shadow-md z-50">
-      <div className="max-w-full mx-auto px-4">
-        <div className="flex w-full font-semibold font-josefin justify-around items-center py-4">
+      <div className="max-w-full mx-auto px-6">
+        <div className="flex w-full justify-between items-center py-4 font-semibold font-josefin">
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2">
             <PiCookingPotBold className="size-6 text-white" />
             <h1 className="text-xl font-bold">Recipe Media</h1>
           </NavLink>
 
-          {/* Navigation Links */}
-
-          <div className=" flex flex-row gap-6  sm:text-base">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-6">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -46,7 +48,8 @@ const Navbar = () => {
             </NavLink>
           </div>
 
-          <div className=" flex flex-row gap-8  sm:text-base">
+          {/* Desktop User Options */}
+          <div className="hidden md:flex gap-6">
             <NavLink
               to="/login"
               className={({ isActive }) =>
@@ -76,7 +79,53 @@ const Navbar = () => {
               <FaRegUser className="size-5" />
             </NavLink>
           </div>
+
+          {/* Hamburger Icon (Mobile) */}
+          <button className="md:hidden text-white text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <HiX /> : <HiMenu />}
+          </button>
         </div>
+
+        {/* Mobile Menu (Dropdown) */}
+        {menuOpen && (
+          <div className="md:hidden flex flex-col gap-4 py-4 text-center bg-green-700 rounded-md">
+            <NavLink to="/" className="py-2 hover:text-gray-300" onClick={() => setMenuOpen(false)}>
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/display-recipes"
+              className="py-2 hover:text-gray-300"
+              onClick={() => setMenuOpen(false)}
+            >
+              Recipes
+            </NavLink>
+
+            <NavLink
+              to="/add-Recipe"
+              className="py-2 hover:text-gray-300"
+              onClick={() => setMenuOpen(false)}
+            >
+              Add Recipe
+            </NavLink>
+
+            <NavLink
+              to="/login"
+              className="py-2 hover:text-gray-300 flex justify-center items-center gap-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Login <IoLogIn className="size-5" />
+            </NavLink>
+
+            <NavLink
+              to="/profile"
+              className="py-2 hover:text-gray-300 flex justify-center items-center gap-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Profile <FaRegUser className="size-5" />
+            </NavLink>
+          </div>
+        )}
       </div>
     </nav>
   );

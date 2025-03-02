@@ -18,6 +18,8 @@ import Home from "./Pages/Home";
 
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { getUser } from "./Store/Slices/authSlice";
+import Footer from "./Components/Footer";
+import ScrolltoTop from "./Pages/ScrolltoTop";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -49,6 +51,9 @@ const App = () => {
           fontFamily: "sans-serif",
         }}
       />
+
+      <ScrolltoTop />
+
       {/* Navbar */}
       <Navbar />
 
@@ -72,6 +77,9 @@ const App = () => {
           <Route path="/more-options" element={<MoreOptions />} />
         </Route>
       </Routes>
+
+      {/* Footer */}
+      <Footer />
     </Router>
   );
 };

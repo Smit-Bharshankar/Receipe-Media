@@ -69,7 +69,7 @@ const RecipePostCard = () => {
           <p className="text-gray-600 text-sm mb-3">{description}</p>
 
           {/* Image */}
-          <img src={cook1} alt={title} className="w-full h-48 object-cover rounded-lg mb-3" />
+          <img src={cook1} alt={title} className="w-full h-56 object-cover rounded-lg mb-3" />
 
           {/* Buttons */}
           <div className="flex justify-between items-center">
