@@ -381,7 +381,7 @@ const getRecipeById = asyncHandler(async (req, res) => {
   const { recipeId } = req.params;
   //TODO: get video by id
   if (!isValidObjectId(recipeId)) {
-    throw new ApiError(400, "Invalid video id");
+    throw new ApiError(400, "Invalid recipe id");
   }
 
   const recipe = await Recipe.findById(recipeId);
@@ -389,7 +389,7 @@ const getRecipeById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Recipe not found");
   }
 
-  return res.status(200).json(new ApiResponse(200, { recipe }, "Re fetched successfully"));
+  return res.status(200).json(new ApiResponse(200, { recipe }, "Recipe fetched successfully"));
 });
 
 const updateRecipe = asyncHandler(async (req, res) => {

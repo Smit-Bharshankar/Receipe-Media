@@ -24,10 +24,10 @@ router.route("/create-Recipe").post(
 
 router.route("/getall-Recipe").get(verifyJwt, getAllRecipe);
 
-router.route("/get-RecipeById").get(getRecipeById);
+router.route("/get-RecipeById/:recipeId").get(getRecipeById);
 
-router.route("/update-Recipe").post(updateRecipe);
+router.route("/update-Recipe/:recipeId").post(updateRecipe);
 
-router.route("/delete-Recipe").delete(verifyJwt, deleteRecipe);
+router.route("/delete-Recipe/:recipeId").delete(verifyJwt, deleteRecipe);
 
 export default router;
